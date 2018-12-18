@@ -1,0 +1,42 @@
+<?php
+/**
+ * WARNING: IF YOU MAKE ECC SPECIFIC CHANGES TO THIS FILE, THEY MUST ALSO BE ADDED TO THE RWD FILE TOO
+ * rwd/default/template/epicor_comm/cart/product/csvupload_quickorderpad.phtml
+ */
+
+/**
+ * Edit cart/csvupdate template
+ *
+ * @see Epicor_Comm_Block_Cart_Product_Csvupdate
+ */
+$itemsInCart = Mage::helper('checkout/cart')->getItemsCount();
+?>
+<form id="product_csv_import_form" action="<?php echo $this->getUrl('epicor_comm/cart/importProductCsv') ?>" 
+      <?php if($itemsInCart){ ?>
+      onsubmit="return confirm('Existing items in the cart will be removed. Do you want to proceed?');" 
+      <?php } ?>
+      method="post" enctype="multipart/form-data">
+    <div class="fieldset">
+        <h2 class="legend""><?php echo $this->__('Add to Cart by CSV'); ?></h2>
+        <ul class="form-list">
+            <li class="wide">
+                <label for="createCsvUploadFileLink"><?php echo $this->__('Click to create a new csv file'); ?></label>
+                <div class="input-box">
+                                        <input id="createCsvUploadFileLink" onclick="location.href='<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB) . 'emptyuploadbycsv.csv' ?>'"  type="button" value="Create"></a> 
+                </div>
+            </li>
+            <li>
+                <label for="input-file"><?php echo $this->__('Click to select file'); ?></label>
+                <div class="input-box">
+                    <input id="input-file" type="file" name="import_product_csv_file" class="input-file required-entry"/>
+                </div>
+            </li>
+            <li>
+                <label for="input-box"><?php echo $this->__('Click to Upload Selected file') ?></label>
+                <div class="input-box">
+                  <input type="submit" value="<?php echo $this->__('Upload'); ?>" />
+                </div>  
+            </li>
+        </ul>
+    </div>
+</form>

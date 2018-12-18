@@ -1,0 +1,45 @@
+<div class="box-info box-account <?php echo $this->getOnRight() ? 'col-2 ' : 'col-full'; ?>">
+    <div class="box-head">
+        <h2><?php echo $this->getTitle(); ?></h2>
+    </div>
+    <div style="">    
+        <ul class="info-list col-count-<?php echo 3 ?>">
+        <?php foreach ($this->_infoData as $label => $value): ?>
+            <li >
+                <?php if(preg_match("~\bReady For Collection\b~",$label)) :?>
+                    <?php if($value != null && $value == true):?>
+                        <span class="label"><?php echo $label; ?></span>
+                        <img src="../../../../../../../skin/frontend/dotnetit/permastore2/images/tick.png" alt="" style="width:15px;height:15px;"/>
+                    <?php else: ?>
+                        <span class="label"><?php echo $label; ?></span>
+                        <img src="../../../../../../../skin/frontend/dotnetit/permastore2/images/cross.png" alt="" style="width:15px;height:15px;"/>
+                    <?php endif; ?>
+                <?php else: ?>
+                     <?php if(preg_match("~\bApproval Drawings\b~",$label) || preg_match("~\bCustomer Approval\b~",$label) || preg_match("~\bManufacturing\b~",$label) || preg_match("~\bBuild Drawings\b~",$label)) : ?>
+                    <?php if($value == null) : ?>
+                        <span class="label"><?php echo $label; ?></span>
+                        <img src="../../../../../../../skin/frontend/dotnetit/permastore2/images/cross.png" alt="" style="width:15px;height:15px;"/>
+                    <?php else: ?>
+                        <span class="label"><?php echo $label; ?></span>
+                        <img src="../../../../../../../skin/frontend/dotnetit/permastore2/images/tick.png" alt="" style="width:15px;height:15px;"/>
+                    <?php endif; ?>
+                <?php else: ?>
+                        <?php if(preg_match("~\bFOB\b~",$label)): ?>
+                            <span class="label">Incoterms &reg; 2010 :</span>
+                        <?php else: ?>
+                            <span class="label"><?php echo $label; ?></span>
+                        <?php endif; ?>
+                        <?php if(preg_match("~\bOrder Date\b~",$label) || preg_match("~\bNeed By\b~",$label) || preg_match("~\bShipment Date\b~",$label) || preg_match("~\bDue By\b~",$label) || preg_match("~\bDue Date\b~",$label) || preg_match("~\brequest_date\b~",$label)): ?>
+                            <span class="value"><?php echo date('d M Y', strtotime( $value)); ?></span>
+                        <?php else: ?>
+                            <span class="value"><?php echo $value; ?></span>
+                        <?php endif; ?>
+                <?php endif; ?>   
+                <?php endif; ?>
+                
+            </li>
+        <?php endforeach; ?> 
+        </ul>
+    </div>
+    
+</div>

@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package>
+    <name>Epicor_Upgrade</name>
+    <version>1.0.5.14</version>
+    <stability>stable</stability>
+    <license>commercial</license>
+    <channel>ecc</channel>
+    <extends/>
+    <summary>Epicor Upgrade Module</summary>
+    <description>Epicor Upgrade Module</description>
+    <notes>Epicor Common module</notes>
+    <authors><author><name>Epicor</name><user>PaulKetelle</user><email>paul.ketelle@epicor.com</email></author><author><name>Epicor</name><user>SeanFlynn</user><email>sean.flynn@epicor.com</email></author><author><name>Epicor</name><user>GarethJames</user><email>gareth.james@epicor.com</email></author></authors>
+    <date>2016-01-29</date>
+    <time>16:00:04</time>
+    <contents><target name="mageetc"><dir name="modules"><file name="Epicor_Upgrade.xml" hash="35cc25c8f6bd7b49803165486f9ed390"/></dir></target><target name="magecommunity"><dir name="Epicor"><dir name="Upgrade"><dir name="Block"><dir name="Adminhtml"><dir name="Advanced"><dir name="Tar"><file name="Form.php" hash="528c97e2563ef16cadcc8fd224208b42"/></dir><file name="Tar.php" hash="d527030bdacd46fd45fe75653ca24c66"/></dir></dir></dir><dir name="Helper"><file name="Data.php" hash="488267f62693e764e61294a53994b574"/></dir><dir name="controllers"><dir name="Adminhtml"><dir name="Epicorupgrade"><dir name="Advanced"><file name="TarController.php" hash="4cb1bb2a227536cb3ebba20c016cdfa9"/></dir></dir></dir></dir><dir name="etc"><file name="adminhtml.xml" hash="fb8c13717a826e1ac32c16e955ea8e5c"/><file name="config.xml" hash="eea349ada1c87259dfc8700f8b6d1893"/></dir><dir name="sql"><dir name="epicor_upgrade_setup"><file name="install-1.0.5.7.0.php" hash="80064aa6544658cbb9f0f49840489345"/><file name="upgrade-1.0.4.0-1.0.5.7.0.php" hash="97fd318530ee3d7f117e82e7a9a1e717"/></dir></dir></dir></dir></target><target name="magedesign"><dir name="adminhtml"><dir name="default"><dir name="default"><dir name="layout"><file name="epicor_upgrade.xml" hash="a6c04c99329e1ac4ea04b7bd7595e52f"/></dir></dir></dir></dir></target></contents>
+    <compatible/>
+    <dependencies><required><php><min>5.3.0</min><max>6.0.0</max></php></required></dependencies>
+</package>

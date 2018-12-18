@@ -1,0 +1,60 @@
+<?php
+/**
+ * Edit customer address template
+ *
+ * @see Mage_Customer_Block_Address_Edit
+ */
+?>
+<?php if (!Mage::registry('quickadd_displayed')) : ?>
+    <div id="cart-quick-add" class="block block-quick-add" >
+        <div class="block-title">
+            <strong><span><?php echo $this->getTitle(); ?></span></strong>
+        </div>
+        <div class="block-content">
+            <div class="empty">
+                <form action="/comm/quickadd/add" method="post" id="quickadd-form">   
+                    <ul class="quickadd-form-list">
+                        <li class="wide">
+                            <label for="sku" class="required"><em>*</em><?php echo $this->__('SKU') ?></label>
+                            <div class="input-box">
+                                <input type="text" name="sku" value="" title="<?php echo $this->__('SKU') ?>" id="qa_sku" class="input-text required-entry" />
+                                <div class="quickadd-autocomplete" id="quickadd_autocomplete"></div>
+                            </div>
+                        </li>
+                        <li class="wide">
+                            <label for="qty" class="required"><em>*</em><?php echo $this->__('Qty') ?></label>
+                            <div class="input-box">
+                                <input type="text" name="qty" value="" title="<?php echo $this->__('Qty') ?>" id="qa_qty" class="input-text required-entry validate-number" />
+                            </div>
+                        </li>
+                        <li class="target">
+                            <div class="field">
+                                <span><?php echo $this->__('Add to:') ?></span>
+                                <input type="radio" name="target" value="wishlist"  title="<?php echo $this->__('Wishlist') ?>" class="input-text" />
+                                <label for="county" class="required"><?php echo $this->__('Wishlist') ?></label>
+                                <input type="radio" name="target" value="basket"  title="<?php echo $this->__('Cart') ?>" class="input-text" checked="checked" />
+                                <label for="county" class="required"><?php echo $this->__('Cart') ?></label>
+                            </div>
+                        </li>
+                    </ul>
+                    <div class="buttons-set actions">
+                        <input type="hidden" name="super_group" value="" id="qa_super_group" />
+                        <p class="required"><?php echo $this->__('* Required Fields') ?></p>
+                        <button type="submit" title="<?php echo $this->__('Add') ?>" class="button" id="quickadd-submit"><span><span><?php echo $this->__('Add') ?></span></span></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <script type="text/javascript" src="<?php echo $this->getSkinUrl('epicor/comm/js/quickadd.js') ?>"></script>
+        <script type="text/javascript" src="<?php echo $this->getJsUrl('mage/adminhtml/form.js') ?>"></script>
+        <?php if ($this->autoCompleteAllowed()) : ?>
+            <script type="text/javascript">
+                //<![CDATA[
+                var qaSearchForm = new Epicor.searchForm('quickadd-form', 'qa_sku', 'qa_super_group', '');
+                qaSearchForm.initAutocomplete('/comm/quickadd/autocomplete/', 'quickadd_autocomplete');
+                //]]>;
+            </script>
+        <?php endif; ?>
+    </div>   
+    <?php Mage::register('quickadd_displayed', true); ?>
+<?php endif; ?>

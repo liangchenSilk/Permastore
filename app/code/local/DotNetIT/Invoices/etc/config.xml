@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <DotNetIT_Invoices>
+            <version>0.0.1</version>
+        </DotNetIT_Invoices>
+    </modules>
+    <global>
+        <models>
+            <Invoices>
+                <class>
+                    DotNetIT_Invoices_Model
+                </class>
+            </Invoices>
+        </models>
+        <events>
+            <cuid_request_processresponse_before>
+                <observers>
+                    <dotnetit_invoices_model_observers>
+                        <type>singleton</type>
+                        <class>DotNetIT_Invoices_Model_Observer</class>
+                        <method>ChangeDescription</method>
+                    </dotnetit_invoices_model_observers>
+                </observers>
+            </cuid_request_processresponse_before>
+        </events>
+        <blocks>
+            <Invoices>
+                <class>DotNetIT_Invoices_Block</class>
+            </Invoices>
+        </blocks>
+        <helpers>
+            <DotNetIT_Invoices>
+                <class>DotNetIT_Invoices_Helper</class>
+            </DotNetIT_Invoices>
+            
+        </helpers>
+    </global>
+    
+</config>

@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<config>
+  <modules>
+    <DotNetIT_OrderInfo>
+      <version>0.1.0</version>
+    </DotNetIT_OrderInfo>
+  </modules>
+  <global>
+    <helpers>
+      <orderinfo>
+        <class>DotNetIT_OrderInfo_Helper</class>
+      </orderinfo>
+    </helpers>
+    <blocks>
+      <orderinfo>
+        <class>DotNetIT_OrderInfo_Block</class>
+      </orderinfo>
+        <customerconnect>
+            <rewrite>
+                <customer_orders_details_info>DotNetIT_OrderInfo_Block_Customerconnect_Customer_Orders_Details_Info</customer_orders_details_info>
+            </rewrite>
+            <rewrite>
+                <customer_orders_details_parts_grid>DotNetIT_OrderInfo_Block_Customerconnect_Customer_Orders_Details_Parts_Grid</customer_orders_details_parts_grid>
+            </rewrite>
+        </customerconnect>
+    </blocks>
+  </global>
+</config> 

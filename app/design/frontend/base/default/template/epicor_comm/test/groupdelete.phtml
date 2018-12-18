@@ -1,0 +1,45 @@
+<?php
+$fileExist = Mage::getModel('catalog/product')->checkProductCheckLogFileExistOrNot();
+if ($fileExist):
+    echo Mage::helper('epicor_comm')->__('Processing is already in progress. Please use Epicor > Advanced > System Logs to view ‘productcheck.log’.');
+else:
+    echo Mage::helper('epicor_comm')->__('This procedure will delete all group products that have duplicates.<br><br>');
+    echo Mage::helper('epicor_comm')->__('*****Before running this process you should have performed ‘Groupdeletedownloadcsv’ to identify which products will be deleted. <br><br>');
+    echo Mage::helper('epicor_comm')->__('Once you have clicked proceed, you can close this page.<br><br>');
+    echo Mage::helper('epicor_comm')->__('Depending upon the number of products in your database, this process may take some time.<br><br>');
+    echo Mage::helper('epicor_comm')->__('You can check processing progress using Epicor > Advanced > System Logs and viewing ‘productcheck.log’.<br><br>');
+    echo Mage::helper('epicor_comm')->__('When processing is complete,  productcheck.log will no longer be available and there will be a date stamped file called WSO-5995-DeletedProduct-yymmddhhmmss.csv which you can view.<br><br>');
+    ?>
+    <div id="hideclassdeletebutton">
+        <?php
+        echo Mage::helper('epicor_comm')->__('Click proceed to continue');
+        ?>
+        <input type="button" id="download" class="btn" value="<?php echo Mage::helper('epicor_comm')->__('Proceed'); ?>" />
+    </div>
+    <span id="deletetext"></span>
+    <script type="text/javascript">
+        $('download').observe('click', function () {
+            new Ajax.Request("<?php echo Mage::getUrl('comm/test/groupdeleteproduct') ?>", {
+                parameters: {isAjax: 1, method: 'GET'},
+                onSuccess: function (transport) {
+                    $('download').disable();
+                    if (transport.responseText === "error") {
+                        alert("<?php echo Mage::helper('epicor_comm')->__("Sorry!! You don't have enough privileges to access the requested page."); ?>");
+                        $('hideclassdeletebutton').show();
+                        $('deletetext').update("");
+                        $('download').show();
+                        $('download').removeAttribute('disabled');
+                    } else if (transport.responseText === "success") {
+                        $('hideclassdeletebutton').hide();
+                        $('deletetext').update("");
+                        $('deletetext').update("<?php echo Mage::helper('epicor_comm')->__('Processing'); ?>");
+                        $('deletetext').setStyle({fontWeight: 'bold', fontSize: '21px'});
+                        $('download').hide();
+                        $('download').value = "<?php echo Mage::helper('epicor_comm')->__('Processing'); ?>";
+                    }
+
+                }
+            });
+        });
+    </script>
+<?php endif; ?>

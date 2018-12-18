@@ -1,0 +1,8 @@
+<div id="configurable_addtocart">  
+    <?php $_product = Mage::registry('product');?>  
+    <?php $buttonTitle = $this->__('Configure Product'); ?>
+    <div class="add-to-cart">
+        <button type="button" title="<?php echo $buttonTitle ?>" class="button btn-cart" onclick="ewaProduct.submit('<?php echo $_product->getSku();?>', '<?php echo $_product->getId();?>');"><span><span><?php echo $buttonTitle ?></span></span></button> 
+        <?php echo $this->getChildHtml('', true, true) ?>
+    </div>
+</div>

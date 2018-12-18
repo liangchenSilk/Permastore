@@ -1,0 +1,294 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magento.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magento.com for more information.
+ *
+ * @category    design
+ * @package     base_default
+ * @copyright   Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+$postparams = Mage::App()->getRequest()->getParam('postparams');
+$branch = Mage::App()->getRequest()->getParam('field_id');
+$insertedVals = json_decode($postparams, true);
+$quoteAddress = Mage::getSingleton('customer/session')->getData('ecc_arpaymentquote_address');
+$firstName = null;
+$lastname = null;
+$middlename = null;
+$city = null;
+$company = null;
+$region = null;
+$regionId = null;
+$telephone = null;
+$mobile = null;
+$street = array();
+$countryId = null;
+$fax = null;
+$postcode = null;
+$address_id = null;
+if (isset($quoteAddress['firstname'])) :
+    $firstName = $quoteAddress['firstname'];
+endif;
+if (isset($quoteAddress['lastname'])) :
+    $lastname = $quoteAddress['lastname'];
+endif;
+if (isset($quoteAddress['middlename'])) :
+    $middlename = $quoteAddress['middlename'];
+endif;
+if (isset($quoteAddress['city'])) :
+    $city = $quoteAddress['city'];
+endif;
+if (isset($quoteAddress['company'])) :
+    $company = $quoteAddress['company'];
+endif;
+if (isset($quoteAddress['street'])) :
+    $street = $quoteAddress['street'];
+endif;
+if (isset($quoteAddress['postcode'])) :
+    $postcode = $quoteAddress['postcode'];
+endif;
+if (isset($quoteAddress['region'])) :
+    $region = $quoteAddress['region'];
+endif;
+if (isset($quoteAddress['region_id'])) :
+    $regionId = $quoteAddress['region_id'];
+endif;
+if (isset($quoteAddress['country_id'])) :
+    $countryId = $quoteAddress['country_id'];
+endif;
+if (isset($quoteAddress['telephone'])) :
+    $telephone = $quoteAddress['telephone'];
+endif;
+if (isset($quoteAddress['mobile_number'])) :
+    $mobile = $quoteAddress['mobile_number'];
+endif;
+if (isset($quoteAddress['fax'])) :
+    $fax = $quoteAddress['fax'];
+endif;
+if (isset($quoteAddress['address_id'])) :
+    $address_id = $quoteAddress['address_id'];
+endif;
+$telephoneRequired = Mage::getStoreConfig('checkout/options/telephone_required');
+$mobileRequired = Mage::getStoreConfigFlag('customer/address/display_mobile_phone') && Mage::getStoreConfigFlag('checkout/options/mobile_number_required');
+?>
+<div class="block-content" id="address_form_block" style="padding:30px">
+    <div class="fieldset">
+        <div class="entry-edit-head" style=" padding-top: 25px;">
+            <h4 id="add_update_address_heading" class="icon-head head-customer-view"><?php echo Mage::helper('epicor_comm')->__('Add/update billing address') ?></h4>
+        </div>
+<?php
+//print_r(Mage::getModel('customerconnect/arpayments')->getErpAddressList());
+$address = Mage::getModel('customerconnect/arpayments')->getErpAddressList();
+$count = count($address);
+if ($count > 0):
+    $styleForSelectBox = 'display:block';
+    $styleBoxDisplay = 'display';
+    $styleForm = 'display:none';
+else:
+    $styleForSelectBox = 'display:none';
+    $styleForm = 'display:block';
+    $styleBoxDisplay = 'no-display';
+endif;
+?>
+        <?php if ($count): ?>
+            <select id="araddress" name="araddress" title="<?php echo $this->__('Billing Address') ?>" class="validate-select erpaddressSubmitorselectbox" onchange="selectAddressForBilling(this.value)">
+            <?php foreach ($address as $addres): ?> 
+                <?php if ($address_id && $addres['address_id'] == $address_id): ?>
+                        <option value="<?php echo $addres['address_id']; ?>" selected><?php echo $addres['details']; ?></option>
+                    <?php else: ?>
+                        <option value="<?php echo $addres['address_id']; ?>"><?php echo $addres['details']; ?></option>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+                <option value=""><?php echo $this->__('New Address') ?></option>
+            </select>
+            <?php endif; ?>
+        <div class="actions" style=" margin: 10px 0 0;float:right;padding-bottom: 32px;">  
+        <?php
+        $checkoutPage = Mage::App()->getRequest()->getParam('checkout');
+        if ($checkoutPage):
+            $onclickFunction = 'hideAddressForm();';
+        else:
+            $onclickFunction = 'arpayments.closepopup();';
+
+        endif;
+        ?>
+            <button type="button" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Close')) ?>" class="button arpaymentaddressform" onclick="<?php echo $onclickFunction; ?>"><span><span><?php echo $this->__('Close') ?></span></span></button>
+        </div>
+        <?php if ($count):?>
+        <div class="entry-edit box-left erpaddressSubmitorselectbox" style="height:45px;"  id="erpaddressSubmit" style="<?php echo $styleForm; ?>">
+            <input type="submit"  title="<?php echo Mage::helper('core')->quoteEscape($this->__('Continue')) ?>" value="<?php echo Mage::helper('core')->quoteEscape($this->__('Continue')) ?>" class="button continueSubmitbutton" onClick="submitErpAddress('<?php echo Mage::getUrl('customerconnect/arpayments/addressupdateposterp') . '?checkout=' . $checkoutPage; ?>')"/>
+            <div class="addressformsubmit"> <img id="addrressSubmitloader" src='<?php echo $this->getSkinUrl('images/addressLoader.gif'); ?>' style="display:none;"/></div>
+        </div>
+        <?php endif;?>
+        <form onsubmit="prevetformsubnmit('form-validate', '<?php echo Mage::getUrl('customerconnect/arpayments/addressupdatepost') . '?checkout=' . $checkoutPage; ?>');return false;"  method="post" id="form-validate" style="<?php echo $styleForm; ?>">
+            <ul class="form-list">
+                <li class="fields">
+<?php //echo $this->getLayout()->createBlock('customer/widget_name')->setObject($this->getFormData())->setForceUseCustomerAttributes(true)->toHtml()  ?>
+                    <?php $nameBlock = new Mage_Customer_Block_Widget_Name(); ?>
+                    <div class="<?php echo $nameBlock->getContainerClassName() ?>">
+                        <div class="field name-firstname">
+                            <label for="<?php echo $nameBlock->getFieldId('firstname') ?>" class="required"><em>*</em><?php echo $nameBlock->getStoreLabel('firstname') ?></label>
+                            <div class="input-box">
+<?php $firstName = ($firstName) ? $firstName : $nameBlock->getFirstname(); ?>
+                                <input type="text" id="<?php echo $nameBlock->getFieldId('firstname') ?>" name="<?php echo $nameBlock->getFieldName('firstname') ?>" value="<?php echo $this->escapeHtml($firstName) ?>" title="<?php echo Mage::helper('core')->quoteEscape($nameBlock->getStoreLabel('firstname')) ?>" maxlength="255" class="input-text <?php echo $this->helper('customer/address')->getAttributeValidationClass('firstname') ?>" <?php echo $nameBlock->getFieldParams() ?> />
+                            </div>
+                        </div>
+<?php if ($nameBlock->showMiddlename()): ?>
+                            <?php $isMiddlenameRequired = $nameBlock->isMiddlenameRequired(); ?>
+                            <div class="field name-middlename">
+                                <label for="<?php echo $nameBlock->getFieldId('middlename') ?>"<?php echo $isMiddlenameRequired ? ' class="required"' : '' ?>><?php echo $isMiddlenameRequired ? '<em>*</em>' : '' ?><?php echo $nameBlock->getStoreLabel('middlename') ?></label>
+                                <div class="input-box">
+    <?php $middlename = ($middlename) ? $middlename : $nameBlock->getMiddlename(); ?>
+                                    <input type="text" id="<?php echo $nameBlock->getFieldId('middlename') ?>" name="<?php echo $nameBlock->getFieldName('middlename') ?>" value="<?php echo $this->escapeHtml($nameBlock->getMiddlename()) ?>" title="<?php echo Mage::helper('core')->quoteEscape($nameBlock->getStoreLabel('middlename')) ?>" class="input-text <?php echo $this->helper('customer/address')->getAttributeValidationClass('middlename') ?>" <?php echo $nameBlock->getFieldParams() ?> />
+                                </div>
+                            </div>
+<?php endif; ?>
+                        <div class="field name-lastname">
+                            <label for="<?php echo $nameBlock->getFieldId('lastname') ?>" class="required"><em>*</em><?php echo $nameBlock->getStoreLabel('lastname') ?></label>
+                            <div class="input-box">
+<?php $lastname = ($lastname) ? $lastname : $nameBlock->getLastname(); ?>
+                                <input type="text" id="<?php echo $nameBlock->getFieldId('lastname') ?>" name="<?php echo $nameBlock->getFieldName('lastname') ?>" value="<?php echo $this->escapeHtml($lastname) ?>" title="<?php echo Mage::helper('core')->quoteEscape($this->getStoreLabel('lastname')) ?>" maxlength="255" class="input-text <?php echo $this->helper('customer/address')->getAttributeValidationClass('lastname') ?>" <?php echo $nameBlock->getFieldParams() ?> />
+                            </div>
+                        </div>
+
+                    </div>
+                </li>
+                <li class="fields">
+                    <div class="field">
+                        <label for="company"><?php echo $this->__('Company') ?></label>
+                        <div class="input-box">
+<?php $company = ($company) ? $company : $nameBlock->getCompany(); ?>
+                            <input type="text" name="company" id="company" value="<?php echo $this->escapeHtml($company) ?>" title="<?php echo $this->__('Company') ?>" class="input-text <?php echo $this->helper('customer/address')->getAttributeValidationClass('company') ?>" />
+                        </div>
+                    </div>
+
+                </li>
+<?php $_streetValidationClass = $this->helper('customer/address')->getAttributeValidationClass('street'); ?>
+                <li class="wide">
+                    <label for="street_1" class="required"><em>*</em><?php echo $this->__('Address') ?></label>
+                    <div class="input-box">
+<?php $streetFirst = ($street) ? $street[0] : $this->getFormData()->getStreet(1); ?>
+                        <input type="text" name="street[]" value="<?php echo $this->escapeHtml($streetFirst) ?>" title="<?php echo $this->__('Street Address') ?>" id="street_1" class="input-text <?php echo $_streetValidationClass ?>" />
+                    </div>
+                </li>
+<?php $_streetValidationClass = trim(str_replace('required-entry', '', $_streetValidationClass)); ?>
+                <?php for ($_i = 1, $_n = $this->helper('customer/address')->getStreetLines(); $_i < $_n; $_i++): ?>
+                    <li class="wide">
+                        <label for="street_rest"><?php echo $this->__('Address %s', $_i) ?></label>
+                        <div class="input-box">
+    <?php $street = ($street) ? $street[$_i] : $this->getFormData()->getStreet($_i); ?>
+                            <input type="text" name="street[]" value="<?php echo $this->escapeHtml($street) ?>" title="<?php echo $this->__('Street Address %s', $_i) ?>" id="street_<?php echo $_i ?>" class="input-text <?php echo $_streetValidationClass ?>" />
+                        </div>
+                    </li>
+<?php endfor; ?>
+                <li class="fields">
+                    <div class="field">
+                        <label for="city" class="required"><em>*</em><?php echo $this->__('City') ?></label>
+                        <div class="input-box">
+<?php $city = ($city) ? $city : $this->getFormData()->getCity(); ?>
+                            <input type="text" name="city" value="<?php echo $this->escapeHtml($city) ?>" title="<?php echo $this->__('City') ?>" class="input-text <?php echo $this->helper('customer/address')->getAttributeValidationClass('city') ?>" id="city" />
+                        </div>
+                    </div>
+                    <div class="field">
+<?php $regionId = ($regionId) ? $regionId : $this->getFormData()->getRegionId(); ?>
+                        <?php $region = ($region) ? $region : $this->getFormData()->getRegion(); ?>
+                        <label for="regionid"><?php echo $this->__('State/Province') ?><em  class="required" style="color:red;">*</em></label>
+                        <div class="input-box">
+                            <select id="region_id" name="region_id" title="<?php echo $this->__('State/Province') ?>" class="validate-select" style="display:none;">
+                                <option value=""><?php echo $this->__('Please select region, state or province') ?></option>
+                            </select>
+                            <script type="text/javascript">
+                                //<![CDATA[
+                                $('region_id').setAttribute('defaultValue', "<?php echo $regionId ?>");
+                                //]]>
+                            </script>
+                            <input type="text" id="region" name="region" value="<?php echo $this->escapeHtml($region) ?>"  title="<?php echo $this->__('State/Province') ?>" class="input-text <?php echo $this->helper('customer/address')->getAttributeValidationClass('region') ?>" style="display:none;" />
+                        </div>
+                    </div>
+                </li>
+                <li class="fields">
+                    <div class="field">
+                        <label for="zip" class="required"><em>*</em><?php echo $this->__('Zip/Postal Code') ?></label>
+                        <div class="input-box">
+<?php $postcode = ($postcode) ? $postcode : $this->getFormData()->getPostcode(); ?>
+                            <input type="text" name="postcode" value="<?php echo $this->escapeHtml($postcode) ?>" title="<?php echo $this->__('Zip/Postal Code') ?>" id="zip" class="input-text validate-zip-international <?php echo $this->helper('customer/address')->getAttributeValidationClass('postcode') ?>" />
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label for="country" class="required"><em>*</em><?php echo $this->__('Country') ?></label>
+<?php $countryBlock = new Epicor_Comm_Block_Directory_Data(); ?>
+                        <div class="input-box">
+                        <?php echo $countryBlock->getCountryHtmlSelect($countryId, 'country_id', 'country', 'Country'); ?>
+                        </div>                       
+                    </div>
+                </li>
+                <li class="fields"> 
+                    <div class="field">
+<?php $telephone = ($telephone) ? $telephone : $this->getFormData()->getTelephone(); ?>
+                        <?php if ($telephoneRequired) : ?>
+                            <label for="telephone" class="required"><em>*</em><?php echo $this->__('Telephone') ?></label>
+                            <div class="input-box">
+                                <input type="text" name="telephone" value="<?php echo $this->escapeHtml($telephone) ?>" title="<?php echo $this->__('Telephone') ?>" class="input-text required-entry" id="telephone" />
+                            </div>
+<?php else : ?> 
+                            <label for="telephone" ><?php echo $this->__('Telephone') ?></label>
+                            <div class="input-box">
+                                <input type="text" name="telephone" value="<?php echo $this->escapeHtml($telephone) ?>" title="<?php echo $this->__('Telephone') ?>" class="input-text" id="telephone" />
+                            </div>
+<?php endif; ?> 
+                    </div>
+                    <div class="field">
+<?php $mobile = ($mobile) ? $mobile : $this->getFormData()->getMobileNumber(); ?>
+                        <?php if ($mobileRequired) : ?>
+                            <label for="mobile_number" class="required"><em>*</em><?php echo $this->__('Mobile') ?></label>
+                            <div class="input-box">
+                                <input type="text" name="mobile_number" id="mobile_number" value="<?php echo $this->escapeHtml($mobile) ?>" title="<?php echo $this->__('Mobile Number') ?>" class="input-text required-entry" />
+                            </div>
+<?php else : ?>
+                            <label for="mobile_number"><?php echo $this->__('Mobile') ?></label>
+                            <div class="input-box">
+                                <input type="text" name="mobile_number" id="mobile_number" value="<?php echo $this->escapeHtml($mobile) ?>" title="<?php echo $this->__('Mobile Number') ?>" class="input-text" />
+                            </div>
+<?php endif; ?> 
+                    </div>
+                    <div class="field">
+                        <label for="fax" ><?php echo $this->__('Fax') ?></label>
+                        <div class="input-box">
+<?php $fax = ($fax) ? $fax : $this->getFormData()->getFax(); ?>
+                            <input type="text" name="fax" id="fax" value="<?php echo $this->escapeHtml($fax) ?>" title="<?php echo $this->__('Fax') ?>" class="input-text <?php echo $this->helper('customer/address')->getAttributeValidationClass('fax') ?>" />
+                        </div>
+                    </div>
+                </li>
+            </ul>
+            <div class="entry-edit box-left" style="height:45px;"  >
+                <input type="submit"  title="<?php echo Mage::helper('core')->quoteEscape($this->__('Continue')) ?>" value="<?php echo Mage::helper('core')->quoteEscape($this->__('Continue')) ?>" class="button continueSubmitbutton" />
+                <div class="addressformsubmit"><img id="addrressSubmitloader" src='<?php echo $this->getSkinUrl('images/addressLoader.gif'); ?>' style="display:none;"/></div>
+            </div>
+    </div>
+
+</form>
+
+<script type="text/javascript">
+    //<![CDATA[
+    var dataForm = new VarienForm('form-validate', true);
+
+    new RegionUpdater('country', 'region', 'region_id', <?php echo $this->helper('directory')->getRegionJson() ?>, undefined, 'zip');
+
+    //]]>
+</script>
+</div>

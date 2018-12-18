@@ -1,0 +1,51 @@
+<?php
+/* @var $this Epicor_Comm_Block_Checkout_Cart_Item_Ninezeronine */
+?>
+<?php
+$theme = Mage::getSingleton('core/design_package')->getPackageName();
+if ($theme == "rwd"):
+    $classname = "showmessageoricon";
+else:
+    $classname = "showmessageoricon_default";
+endif;
+$_item = $this->getItem();
+$description = $_item->getNineZeroNineMessage();
+$storeConfig = Mage::getStoreConfig('checkout/options/showninezeronine', Mage::app()->getStore()->getStoreId());
+if ($storeConfig == 'iconmsg'):
+    $classOrId = 'iconmessage';
+endif;
+if ($storeConfig == 'icon'):
+    $classOrId = 'onlyicon';
+endif;
+if ($storeConfig == 'msg'):
+    $classOrId = 'onlymessage';
+endif;
+$unitOfMeasure=Mage::getStoreConfig('Epicor_Comm/units_of_measure/display_in_cart', Mage::app()->getStore()->getStoreId());
+$style=null;
+if(!$unitOfMeasure && $classname=='showmessageoricon' && $storeConfig != 'msg' ){
+    $style='style="margin:-26px;"';
+}
+if ($storeConfig && $description) :
+    ?>
+    <div class="<?php echo $classname; ?>" id="<?php echo $classOrId; ?>" <?php echo $style;?>>
+        <?php if ($storeConfig == 'iconmsg') :
+            ?>
+            <a class="status_help cart-not-allowed" id="ninezeroninemsgicon<?php echo $this->getItem()->getId(); ?>"><img class="cart-not-allowed" id="line_ninezero_<?php echo $this->getItem()->getId() ?>"src="<?php echo $this->getSkinUrl('images/cart_not_allowed.png'); ?>"><i></i></a>    
+            <span class="ninezeroninemsg" id="ninezeroninemsg<?php echo $this->getItem()->getId() ?>"><?php echo $description; ?></span>
+        <?php elseif ($storeConfig == 'icon') :
+            ?>
+            <img src="<?php echo $this->getSkinUrl('images/cart_not_allowed.png'); ?>" class="cart-not-allowed" id="line_ninezero_<?php echo $this->getItem()->getId() ?>"/>
+        <?php elseif ($storeConfig == 'msg') :
+            ?>
+            <span class="onlyninezeroninemsg" id="ninezeroninemsg<?php echo $this->getItem()->getId() ?>"><?php echo $description; ?></span>
+        <?php endif ?>
+    </div>
+<?php endif;
+?>
+<?php if ($storeConfig == 'iconmsg') : ?>
+    <script type="text/javascript">
+        jQuery("#line_ninezero_<?php echo $this->getItem()->getId() ?>").mouseover(function () {
+            jQuery('#ninezeroninemsgicon<?php echo $this->getItem()->getId(); ?> >i').text(jQuery('#ninezeroninemsg<?php echo $this->getItem()->getId() ?>').text());
+        });
+    </script>
+<?php endif; ?>

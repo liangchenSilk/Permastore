@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<layout version="0.1.7">
+    <adminhtml_conflictchecker_check_templates>
+        <reference name="content">
+            <block type="conflictchecker/adminhtml_check_templates" name="check_templates" />
+        </reference>
+    </adminhtml_conflictchecker_check_templates>
+</layout>

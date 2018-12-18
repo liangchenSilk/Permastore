@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+    <modules>
+        <Epicor_ConflictChecker>
+            <version>0.0.0.1</version>
+        </Epicor_ConflictChecker>
+    </modules>
+    <global>
+        <blocks>
+            <conflictchecker>
+                <class>Epicor_ConflictChecker_Block</class>
+            </conflictchecker>
+        </blocks>
+        <helpers>
+            <conflictchecker>
+                <class>Epicor_ConflictChecker_Helper</class>
+            </conflictchecker>
+        </helpers>
+    </global>
+    <adminhtml>
+        <layout>
+            <updates>
+                <conflictchecker>
+                    <file>epicor_conflictchecker.xml</file>
+                </conflictchecker>
+            </updates>
+        </layout>
+    </adminhtml>
+    <admin>
+        <routers>
+            <adminhtml>
+                                <args>
+                                        <modules>
+                                                <conflictchecker before="Mage_Adminhtml">Epicor_ConflictChecker_Adminhtml</conflictchecker>
+                                        </modules>
+                                </args>
+                        </adminhtml>
+        </routers>
+    </admin>
+</config>
